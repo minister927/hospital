@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hospital.mapper.ChPrescriptionMapper">
+
+    <resultMap type="ChPrescription" id="ChPrescriptionResult">
+        <result property="prescriptionId"    column="prescription_id"    />
+        <result property="prescriptionNo"    column="prescription_no"    />
+        <result property="patientId"    column="patient_id"    />
+        <result property="staffId"    column="staff_id"    />
+        <result property="recordId"    column="record_id"    />
+        <result property="diagnosis"    column="diagnosis"    />
+        <result property="usageInstructions"    column="usage_instructions"    />
+        <result property="totalAmount"    column="total_amount"    />
+        <result property="prescriptionType"    column="prescription_type"    />
+        <result property="prescriptionStatus"    column="prescription_status"    />
+        <result property="dispenseTime"    column="dispense_time"    />
+        <result property="dispenserId"    column="dispenser_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <resultMap id="ChPrescriptionChPrescriptionDetailResult" type="ChPrescription" extends="ChPrescriptionResult">
+        <collection property="chPrescriptionDetailList" ofType="ChPrescriptionDetail" column="prescription_id" select="selectChPrescriptionDetailList" />
+    </resultMap>
+
+    <resultMap type="ChPrescriptionDetail" id="ChPrescriptionDetailResult">
+        <result property="detailId"    column="detail_id"    />
+        <result property="prescriptionId"    column="prescription_id"    />
+        <result property="medicineId"    column="medicine_id"    />
+        <result property="quantity"    column="quantity"    />
+        <result property="dosage"    column="dosage"    />
+        <result property="frequency"    column="frequency"    />
+        <result property="days"    column="days"    />
+        <result property="totalQuantity"    column="total_quantity"    />
+        <result property="usageMethod"    column="usage_method"    />
+        <result property="unitPrice"    column="unit_price"    />
+        <result property="subtotal"    column="subtotal"    />
+        <result property="notes"    column="notes"    />
+    </resultMap>
+
+    <sql id="selectChPrescriptionVo">
+        select prescription_id, prescription_no, patient_id, staff_id, record_id, diagnosis, usage_instructions, total_amount, prescription_type, prescription_status, dispense_time, dispenser_id, create_time, update_time from ch_prescription
+    </sql>
+
+    <select id="selectChPrescriptionList" parameterType="ChPrescription" resultMap="ChPrescriptionResult">
+        <include refid="selectChPrescriptionVo"/>
+        <where>
+            <if test="prescriptionNo != null  and prescriptionNo != ''"> and prescription_no = #{prescriptionNo}</if>
+            <if test="patientId != null "> and patient_id = #{patientId}</if>
+            <if test="staffId != null "> and staff_id = #{staffId}</if>
+            <if test="recordId != null "> and record_id = #{recordId}</if>
+            <if test="diagnosis != null  and diagnosis != ''"> and diagnosis = #{diagnosis}</if>
+            <if test="usageInstructions != null  and usageInstructions != ''"> and usage_instructions = #{usageInstructions}</if>
+            <if test="totalAmount != null "> and total_amount = #{totalAmount}</if>
+            <if test="prescriptionType != null  and prescriptionType != ''"> and prescription_type = #{prescriptionType}</if>
+            <if test="prescriptionStatus != null  and prescriptionStatus != ''"> and prescription_status = #{prescriptionStatus}</if>
+            <if test="dispenseTime != null "> and dispense_time = #{dispenseTime}</if>
+            <if test="dispenserId != null "> and dispenser_id = #{dispenserId}</if>
+        </where>
+    </select>
+
+    <select id="selectChPrescriptionByPrescriptionId" parameterType="Long" resultMap="ChPrescriptionChPrescriptionDetailResult">
+        select prescription_id, prescription_no, patient_id, staff_id, record_id, diagnosis, usage_instructions, total_amount, prescription_type, prescription_status, dispense_time, dispenser_id, create_time, update_time
+        from ch_prescription
+        where prescription_id = #{prescriptionId}
+    </select>
+
+    <select id="selectChPrescriptionDetailList" resultMap="ChPrescriptionDetailResult">
+        select detail_id, prescription_id, medicine_id, quantity, dosage, frequency, days, total_quantity, usage_method, unit_price, subtotal, notes
+        from ch_prescription_detail
+        where prescription_id = #{prescription_id}
+    </select>
+
+    <insert id="insertChPrescription" parameterType="ChPrescription" useGeneratedKeys="true" keyProperty="prescriptionId">
+        insert into ch_prescription
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="prescriptionNo != null and prescriptionNo != ''">prescription_no,</if>
+            <if test="patientId != null">patient_id,</if>
+            <if test="staffId != null">staff_id,</if>
+            <if test="recordId != null">record_id,</if>
+            <if test="diagnosis != null">diagnosis,</if>
+            <if test="usageInstructions != null">usage_instructions,</if>
+            <if test="totalAmount != null">total_amount,</if>
+            <if test="prescriptionType != null">prescription_type,</if>
+            <if test="prescriptionStatus != null">prescription_status,</if>
+            <if test="dispenseTime != null">dispense_time,</if>
+            <if test="dispenserId != null">dispenser_id,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="prescriptionNo != null and prescriptionNo != ''">#{prescriptionNo},</if>
+            <if test="patientId != null">#{patientId},</if>
+            <if test="staffId != null">#{staffId},</if>
+            <if test="recordId != null">#{recordId},</if>
+            <if test="diagnosis != null">#{diagnosis},</if>
+            <if test="usageInstructions != null">#{usageInstructions},</if>
+            <if test="totalAmount != null">#{totalAmount},</if>
+            <if test="prescriptionType != null">#{prescriptionType},</if>
+            <if test="prescriptionStatus != null">#{prescriptionStatus},</if>
+            <if test="dispenseTime != null">#{dispenseTime},</if>
+            <if test="dispenserId != null">#{dispenserId},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateChPrescription" parameterType="ChPrescription">
+        update ch_prescription
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="prescriptionNo != null and prescriptionNo != ''">prescription_no = #{prescriptionNo},</if>
+            <if test="patientId != null">patient_id = #{patientId},</if>
+            <if test="staffId != null">staff_id = #{staffId},</if>
+            <if test="recordId != null">record_id = #{recordId},</if>
+            <if test="diagnosis != null">diagnosis = #{diagnosis},</if>
+            <if test="usageInstructions != null">usage_instructions = #{usageInstructions},</if>
+            <if test="totalAmount != null">total_amount = #{totalAmount},</if>
+            <if test="prescriptionType != null">prescription_type = #{prescriptionType},</if>
+            <if test="prescriptionStatus != null">prescription_status = #{prescriptionStatus},</if>
+            <if test="dispenseTime != null">dispense_time = #{dispenseTime},</if>
+            <if test="dispenserId != null">dispenser_id = #{dispenserId},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where prescription_id = #{prescriptionId}
+    </update>
+
+    <delete id="deleteChPrescriptionByPrescriptionId" parameterType="Long">
+        delete from ch_prescription where prescription_id = #{prescriptionId}
+    </delete>
+
+    <delete id="deleteChPrescriptionByPrescriptionIds" parameterType="String">
+        delete from ch_prescription where prescription_id in
+        <foreach item="prescriptionId" collection="array" open="(" separator="," close=")">
+            #{prescriptionId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteChPrescriptionDetailByPrescriptionIds" parameterType="String">
+        delete from ch_prescription_detail where prescription_id in
+        <foreach item="prescriptionId" collection="array" open="(" separator="," close=")">
+            #{prescriptionId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteChPrescriptionDetailByPrescriptionId" parameterType="Long">
+        delete from ch_prescription_detail where prescription_id = #{prescriptionId}
+    </delete>
+
+    <insert id="batchChPrescriptionDetail">
+        insert into ch_prescription_detail( detail_id, prescription_id, medicine_id, quantity, dosage, frequency, days, total_quantity, usage_method, unit_price, subtotal, notes) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.detailId}, #{item.prescriptionId}, #{item.medicineId}, #{item.quantity}, #{item.dosage}, #{item.frequency}, #{item.days}, #{item.totalQuantity}, #{item.usageMethod}, #{item.unitPrice}, #{item.subtotal}, #{item.notes})
+        </foreach>
+    </insert>
+</mapper>

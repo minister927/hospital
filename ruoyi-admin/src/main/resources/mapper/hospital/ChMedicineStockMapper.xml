@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hospital.mapper.ChMedicineStockMapper">
+    
+    <resultMap type="ChMedicineStock" id="ChMedicineStockResult">
+        <result property="stockId"    column="stock_id"    />
+        <result property="medicineId"    column="medicine_id"    />
+        <result property="batchNo"    column="batch_no"    />
+        <result property="productionDate"    column="production_date"    />
+        <result property="expiryDate"    column="expiry_date"    />
+        <result property="quantity"    column="quantity"    />
+        <result property="availableQuantity"    column="available_quantity"    />
+        <result property="purchasePrice"    column="purchase_price"    />
+        <result property="supplier"    column="supplier"    />
+        <result property="storageLocation"    column="storage_location"    />
+        <result property="stockStatus"    column="stock_status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectChMedicineStockVo">
+        select stock_id, medicine_id, batch_no, production_date, expiry_date, quantity, available_quantity, purchase_price, supplier, storage_location, stock_status, create_by, create_time, update_by, update_time from ch_medicine_stock
+    </sql>
+
+    <select id="selectChMedicineStockList" parameterType="ChMedicineStock" resultMap="ChMedicineStockResult">
+        <include refid="selectChMedicineStockVo"/>
+        <where>  
+            <if test="medicineId != null "> and medicine_id = #{medicineId}</if>
+            <if test="stockStatus != null  and stockStatus != ''"> and stock_status = #{stockStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectChMedicineStockByStockId" parameterType="Long" resultMap="ChMedicineStockResult">
+        <include refid="selectChMedicineStockVo"/>
+        where stock_id = #{stockId}
+    </select>
+
+    <insert id="insertChMedicineStock" parameterType="ChMedicineStock" useGeneratedKeys="true" keyProperty="stockId">
+        insert into ch_medicine_stock
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="medicineId != null">medicine_id,</if>
+            <if test="batchNo != null and batchNo != ''">batch_no,</if>
+            <if test="productionDate != null">production_date,</if>
+            <if test="expiryDate != null">expiry_date,</if>
+            <if test="quantity != null">quantity,</if>
+            <if test="availableQuantity != null">available_quantity,</if>
+            <if test="purchasePrice != null">purchase_price,</if>
+            <if test="supplier != null">supplier,</if>
+            <if test="storageLocation != null">storage_location,</if>
+            <if test="stockStatus != null">stock_status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="medicineId != null">#{medicineId},</if>
+            <if test="batchNo != null and batchNo != ''">#{batchNo},</if>
+            <if test="productionDate != null">#{productionDate},</if>
+            <if test="expiryDate != null">#{expiryDate},</if>
+            <if test="quantity != null">#{quantity},</if>
+            <if test="availableQuantity != null">#{availableQuantity},</if>
+            <if test="purchasePrice != null">#{purchasePrice},</if>
+            <if test="supplier != null">#{supplier},</if>
+            <if test="storageLocation != null">#{storageLocation},</if>
+            <if test="stockStatus != null">#{stockStatus},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateChMedicineStock" parameterType="ChMedicineStock">
+        update ch_medicine_stock
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="medicineId != null">medicine_id = #{medicineId},</if>
+            <if test="batchNo != null and batchNo != ''">batch_no = #{batchNo},</if>
+            <if test="productionDate != null">production_date = #{productionDate},</if>
+            <if test="expiryDate != null">expiry_date = #{expiryDate},</if>
+            <if test="quantity != null">quantity = #{quantity},</if>
+            <if test="availableQuantity != null">available_quantity = #{availableQuantity},</if>
+            <if test="purchasePrice != null">purchase_price = #{purchasePrice},</if>
+            <if test="supplier != null">supplier = #{supplier},</if>
+            <if test="storageLocation != null">storage_location = #{storageLocation},</if>
+            <if test="stockStatus != null">stock_status = #{stockStatus},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where stock_id = #{stockId}
+    </update>
+
+    <delete id="deleteChMedicineStockByStockId" parameterType="Long">
+        delete from ch_medicine_stock where stock_id = #{stockId}
+    </delete>
+
+    <delete id="deleteChMedicineStockByStockIds" parameterType="String">
+        delete from ch_medicine_stock where stock_id in 
+        <foreach item="stockId" collection="array" open="(" separator="," close=")">
+            #{stockId}
+        </foreach>
+    </delete>
+</mapper>

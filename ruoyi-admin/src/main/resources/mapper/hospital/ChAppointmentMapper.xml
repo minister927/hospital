@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hospital.mapper.ChAppointmentMapper">
+    
+    <resultMap type="com.ruoyi.hospital.domain.ChAppointment" id="ChAppointmentResult">
+        <result property="appointmentId"    column="appointment_id"    />
+        <result property="appointmentNo"    column="appointment_no"    />
+        <result property="patientId"    column="patient_id"    />
+        <result property="staffId"    column="staff_id"    />
+        <result property="scheduleId"    column="schedule_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="appointmentDate"    column="appointment_date"    />
+        <result property="timeSlot"    column="time_slot"    />
+        <result property="appointmentTime"    column="appointment_time"    />
+        <result property="queueNumber"    column="queue_number"    />
+        <result property="symptoms"    column="symptoms"    />
+        <result property="source"    column="source"    />
+        <result property="fee"    column="fee"    />
+        <result property="paymentStatus"    column="payment_status"    />
+        <result property="appointmentStatus"    column="appointment_status"    />
+        <result property="cancelReason"    column="cancel_reason"    />
+        <result property="arriveTime"    column="arrive_time"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+
+        <!-- 关联患者 -->
+        <association property="patient" javaType="com.ruoyi.hospital.domain.ChPatient">
+            <id     property="patientId"    column="p_id"       />
+            <result property="patientNo"   column="p_patient_no"/>
+            <result property="patientName"  column="p_name"     />
+            <result property="phone"        column="p_phone"    />
+        </association>
+
+        <!-- 关联医生 -->
+        <association property="staff" javaType="com.ruoyi.hospital.domain.ChStaff">
+            <id     property="staffId"      column="s_id"       />
+            <result property="staffName"    column="s_name"     />
+        </association>
+    </resultMap>
+
+    <sql id="selectChAppointmentVo">
+        select a.appointment_id, a.appointment_no, a.patient_id, a.staff_id, a.schedule_id, a.dept_id,
+               a.appointment_date, a.time_slot, a.appointment_time, a.queue_number, a.symptoms,
+               a.source, a.fee, a.payment_status, a.appointment_status, a.cancel_reason,
+               a.arrive_time, a.create_time, a.update_time,
+               p.patient_id as p_id, p.patient_no as p_patient_no, u.nick_name as p_name, p.phone as p_phone,
+               s.staff_id as s_id, s.staff_name as s_name
+        from ch_appointment a
+        left join ch_patient p on a.patient_id = p.patient_id
+        left join sys_user u on p.user_id = u.user_id
+        left join ch_staff s on a.staff_id = s.staff_id
+    </sql>
+
+    <select id="selectChAppointmentList" parameterType="ChAppointment" resultMap="ChAppointmentResult">
+        <include refid="selectChAppointmentVo"/>
+        <where>  
+            <if test="appointmentNo != null  and appointmentNo != ''"> and appointment_no = #{appointmentNo}</if>
+            <if test="patientId != null "> and patient_id = #{patientId}</if>
+            <if test="staffId != null "> and staff_id = #{staffId}</if>
+            <if test="scheduleId != null "> and schedule_id = #{scheduleId}</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="appointmentDate != null "> and appointment_date = #{appointmentDate}</if>
+            <if test="source != null  and source != ''"> and source = #{source}</if>
+            <if test="appointmentStatus != null  and appointmentStatus != ''"> and appointment_status = #{appointmentStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectChAppointmentByAppointmentId" parameterType="Long" resultMap="ChAppointmentResult">
+        <include refid="selectChAppointmentVo"/>
+        where appointment_id = #{appointmentId}
+    </select>
+
+    <insert id="insertChAppointment" parameterType="ChAppointment" useGeneratedKeys="true" keyProperty="appointmentId">
+        insert into ch_appointment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="appointmentNo != null and appointmentNo != ''">appointment_no,</if>
+            <if test="patientId != null">patient_id,</if>
+            <if test="staffId != null">staff_id,</if>
+            <if test="scheduleId != null">schedule_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="appointmentDate != null">appointment_date,</if>
+            <if test="timeSlot != null and timeSlot != ''">time_slot,</if>
+            <if test="appointmentTime != null">appointment_time,</if>
+            <if test="queueNumber != null">queue_number,</if>
+            <if test="symptoms != null">symptoms,</if>
+            <if test="source != null">source,</if>
+            <if test="fee != null">fee,</if>
+            <if test="paymentStatus != null">payment_status,</if>
+            <if test="appointmentStatus != null">appointment_status,</if>
+            <if test="cancelReason != null">cancel_reason,</if>
+            <if test="arriveTime != null">arrive_time,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="appointmentNo != null and appointmentNo != ''">#{appointmentNo},</if>
+            <if test="patientId != null">#{patientId},</if>
+            <if test="staffId != null">#{staffId},</if>
+            <if test="scheduleId != null">#{scheduleId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="appointmentDate != null">#{appointmentDate},</if>
+            <if test="timeSlot != null and timeSlot != ''">#{timeSlot},</if>
+            <if test="appointmentTime != null">#{appointmentTime},</if>
+            <if test="queueNumber != null">#{queueNumber},</if>
+            <if test="symptoms != null">#{symptoms},</if>
+            <if test="source != null">#{source},</if>
+            <if test="fee != null">#{fee},</if>
+            <if test="paymentStatus != null">#{paymentStatus},</if>
+            <if test="appointmentStatus != null">#{appointmentStatus},</if>
+            <if test="cancelReason != null">#{cancelReason},</if>
+            <if test="arriveTime != null">#{arriveTime},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateChAppointment" parameterType="ChAppointment">
+        update ch_appointment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="appointmentNo != null and appointmentNo != ''">appointment_no = #{appointmentNo},</if>
+            <if test="patientId != null">patient_id = #{patientId},</if>
+            <if test="staffId != null">staff_id = #{staffId},</if>
+            <if test="scheduleId != null">schedule_id = #{scheduleId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="appointmentDate != null">appointment_date = #{appointmentDate},</if>
+            <if test="timeSlot != null and timeSlot != ''">time_slot = #{timeSlot},</if>
+            <if test="appointmentTime != null">appointment_time = #{appointmentTime},</if>
+            <if test="queueNumber != null">queue_number = #{queueNumber},</if>
+            <if test="symptoms != null">symptoms = #{symptoms},</if>
+            <if test="source != null">source = #{source},</if>
+            <if test="fee != null">fee = #{fee},</if>
+            <if test="paymentStatus != null">payment_status = #{paymentStatus},</if>
+            <if test="appointmentStatus != null">appointment_status = #{appointmentStatus},</if>
+            <if test="cancelReason != null">cancel_reason = #{cancelReason},</if>
+            <if test="arriveTime != null">arrive_time = #{arriveTime},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where appointment_id = #{appointmentId}
+    </update>
+
+    <delete id="deleteChAppointmentByAppointmentId" parameterType="Long">
+        delete from ch_appointment where appointment_id = #{appointmentId}
+    </delete>
+
+    <delete id="deleteChAppointmentByAppointmentIds" parameterType="String">
+        delete from ch_appointment where appointment_id in 
+        <foreach item="appointmentId" collection="array" open="(" separator="," close=")">
+            #{appointmentId}
+        </foreach>
+    </delete>
+</mapper>

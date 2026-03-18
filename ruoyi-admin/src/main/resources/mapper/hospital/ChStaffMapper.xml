@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hospital.mapper.ChStaffMapper">
+    
+    <resultMap type="ChStaff" id="ChStaffResult">
+        <result property="staffId"    column="staff_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="staffNo"    column="staff_no"    />
+        <result property="staffName"    column="staff_name"    />
+        <result property="gender"    column="gender"    />
+        <result property="birthDate"    column="birth_date"    />
+        <result property="idCard"    column="id_card"    />
+        <result property="phone"    column="phone"    />
+        <result property="email"    column="email"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="staffType"    column="staff_type"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectChStaffVo">
+        select staff_id, user_id, staff_no, staff_name, gender, birth_date, id_card, phone, email, dept_id, staff_type, status, create_by, create_time, update_by, update_time, remark from ch_staff
+    </sql>
+
+    <select id="selectChStaffList" parameterType="ChStaff" resultMap="ChStaffResult">
+        <include refid="selectChStaffVo"/>
+        <where>  
+            <if test="staffNo != null  and staffNo != ''"> and staff_no = #{staffNo}</if>
+            <if test="staffName != null  and staffName != ''"> and staff_name like concat('%', #{staffName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectChStaffByStaffId" parameterType="Long" resultMap="ChStaffResult">
+        <include refid="selectChStaffVo"/>
+        where staff_id = #{staffId}
+    </select>
+
+    <insert id="insertChStaff" parameterType="ChStaff" useGeneratedKeys="true" keyProperty="staffId">
+        insert into ch_staff
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="staffNo != null and staffNo != ''">staff_no,</if>
+            <if test="staffName != null and staffName != ''">staff_name,</if>
+            <if test="gender != null">gender,</if>
+            <if test="birthDate != null">birth_date,</if>
+            <if test="idCard != null">id_card,</if>
+            <if test="phone != null">phone,</if>
+            <if test="email != null">email,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="staffType != null">staff_type,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="staffNo != null and staffNo != ''">#{staffNo},</if>
+            <if test="staffName != null and staffName != ''">#{staffName},</if>
+            <if test="gender != null">#{gender},</if>
+            <if test="birthDate != null">#{birthDate},</if>
+            <if test="idCard != null">#{idCard},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="email != null">#{email},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="staffType != null">#{staffType},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateChStaff" parameterType="ChStaff">
+        update ch_staff
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="staffNo != null and staffNo != ''">staff_no = #{staffNo},</if>
+            <if test="staffName != null and staffName != ''">staff_name = #{staffName},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="birthDate != null">birth_date = #{birthDate},</if>
+            <if test="idCard != null">id_card = #{idCard},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="staffType != null">staff_type = #{staffType},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where staff_id = #{staffId}
+    </update>
+
+    <delete id="deleteChStaffByStaffId" parameterType="Long">
+        delete from ch_staff where staff_id = #{staffId}
+    </delete>
+
+    <delete id="deleteChStaffByStaffIds" parameterType="String">
+        delete from ch_staff where staff_id in 
+        <foreach item="staffId" collection="array" open="(" separator="," close=")">
+            #{staffId}
+        </foreach>
+    </delete>
+</mapper>

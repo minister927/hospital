@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hospital.mapper.ChMedicineMapper">
+    
+    <resultMap type="ChMedicine" id="ChMedicineResult">
+        <result property="medicineId"    column="medicine_id"    />
+        <result property="medicineCode"    column="medicine_code"    />
+        <result property="medicineName"    column="medicine_name"    />
+        <result property="specification"    column="specification"    />
+        <result property="categoryId"    column="category_id"    />
+        <result property="categoryName" column="category_name"/>
+        <result property="manufacturer"    column="manufacturer"    />
+        <result property="approvalNumber"    column="approval_number"    />
+        <result property="isPrescription"    column="is_prescription"    />
+        <result property="purchasePrice"    column="purchase_price"    />
+        <result property="salePrice"    column="sale_price"    />
+        <result property="stockWarning"    column="stock_warning"    />
+        <result property="validityPeriod"    column="validity_period"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectChMedicineVo">
+        SELECT
+            m.medicine_id,
+            m.medicine_code,
+            m.medicine_name,
+            m.specification,
+            m.category_id,
+            c.category_name as category_name,
+            m.manufacturer,
+            m.approval_number,
+            m.is_prescription,
+            m.purchase_price,
+            m.sale_price,
+            m.stock_warning,
+            m.validity_period,
+            m.status,
+            m.create_by,
+            m.create_time,
+            m.update_by,
+            m.update_time,
+            m.remark
+        FROM ch_medicine m
+                 LEFT JOIN ch_medicine_category c ON m.category_id = c.category_id
+    </sql>
+
+    <select id="selectChMedicineList" parameterType="ChMedicine" resultMap="ChMedicineResult">
+        <include refid="selectChMedicineVo"/>
+        <where>  
+            <if test="medicineCode != null  and medicineCode != ''"> and medicine_code = #{medicineCode}</if>
+            <if test="medicineName != null  and medicineName != ''"> and medicine_name like concat('%', #{medicineName}, '%')</if>
+            <if test="specification != null  and specification != ''"> and specification = #{specification}</if>
+<!--            <if test="categoryId != null "> and category_id = #{categoryId}</if>-->
+            <if test="categoryName != null  and categoryName != ''"> AND c.category_name like concat('%', #{categoryName}, '%')</if>
+            <if test="manufacturer != null  and manufacturer != ''"> and manufacturer = #{manufacturer}</if>
+            <if test="approvalNumber != null  and approvalNumber != ''"> and approval_number = #{approvalNumber}</if>
+            <if test="isPrescription != null "> and is_prescription = #{isPrescription}</if>
+            <if test="purchasePrice != null "> and purchase_price = #{purchasePrice}</if>
+            <if test="salePrice != null "> and sale_price = #{salePrice}</if>
+            <if test="stockWarning != null "> and stock_warning = #{stockWarning}</if>
+            <if test="validityPeriod != null "> and validity_period = #{validityPeriod}</if>
+        </where>
+    </select>
+    
+    <select id="selectChMedicineByMedicineId" parameterType="Long" resultMap="ChMedicineResult">
+        <include refid="selectChMedicineVo"/>
+        where medicine_id = #{medicineId}
+    </select>
+
+    <insert id="insertChMedicine" parameterType="ChMedicine" useGeneratedKeys="true" keyProperty="medicineId">
+        insert into ch_medicine
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="medicineCode != null and medicineCode != ''">medicine_code,</if>
+            <if test="medicineName != null and medicineName != ''">medicine_name,</if>
+            <if test="specification != null">specification,</if>
+            <if test="categoryId != null">category_id,</if>
+            <if test="manufacturer != null">manufacturer,</if>
+            <if test="approvalNumber != null">approval_number,</if>
+            <if test="isPrescription != null">is_prescription,</if>
+            <if test="purchasePrice != null">purchase_price,</if>
+            <if test="salePrice != null">sale_price,</if>
+            <if test="stockWarning != null">stock_warning,</if>
+            <if test="validityPeriod != null">validity_period,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="medicineCode != null and medicineCode != ''">#{medicineCode},</if>
+            <if test="medicineName != null and medicineName != ''">#{medicineName},</if>
+            <if test="specification != null">#{specification},</if>
+            <if test="categoryId != null">#{categoryId},</if>
+            <if test="manufacturer != null">#{manufacturer},</if>
+            <if test="approvalNumber != null">#{approvalNumber},</if>
+            <if test="isPrescription != null">#{isPrescription},</if>
+            <if test="purchasePrice != null">#{purchasePrice},</if>
+            <if test="salePrice != null">#{salePrice},</if>
+            <if test="stockWarning != null">#{stockWarning},</if>
+            <if test="validityPeriod != null">#{validityPeriod},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateChMedicine" parameterType="ChMedicine">
+        update ch_medicine
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="medicineCode != null and medicineCode != ''">medicine_code = #{medicineCode},</if>
+            <if test="medicineName != null and medicineName != ''">medicine_name = #{medicineName},</if>
+            <if test="specification != null">specification = #{specification},</if>
+            <if test="categoryId != null">category_id = #{categoryId},</if>
+            <if test="manufacturer != null">manufacturer = #{manufacturer},</if>
+            <if test="approvalNumber != null">approval_number = #{approvalNumber},</if>
+            <if test="isPrescription != null">is_prescription = #{isPrescription},</if>
+            <if test="purchasePrice != null">purchase_price = #{purchasePrice},</if>
+            <if test="salePrice != null">sale_price = #{salePrice},</if>
+            <if test="stockWarning != null">stock_warning = #{stockWarning},</if>
+            <if test="validityPeriod != null">validity_period = #{validityPeriod},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where medicine_id = #{medicineId}
+    </update>
+
+    <delete id="deleteChMedicineByMedicineId" parameterType="Long">
+        delete from ch_medicine where medicine_id = #{medicineId}
+    </delete>
+
+    <delete id="deleteChMedicineByMedicineIds" parameterType="String">
+        delete from ch_medicine where medicine_id in 
+        <foreach item="medicineId" collection="array" open="(" separator="," close=")">
+            #{medicineId}
+        </foreach>
+    </delete>
+</mapper>

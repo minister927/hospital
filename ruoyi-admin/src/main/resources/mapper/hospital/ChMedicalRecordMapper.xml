@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--未检查-->
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hospital.mapper.ChMedicalRecordMapper">
+    <resultMap type="com.ruoyi.hospital.domain.ChMedicalRecord" id="ChMedicalRecordResult">
+        <id     property="recordId"            column="record_id"            />
+        <result property="recordNo"            column="record_no"            />
+        <result property="patientId"           column="patient_id"           />
+        <result property="staffId"             column="staff_id"             />
+        <result property="prescriptionId"      column="prescription_id"      />
+        <result property="visitDate"           column="visit_date"           />
+        <result property="visitType"           column="visit_type"           />
+        <result property="chiefComplaint"      column="chief_complaint"      />
+        <result property="presentIllness"      column="present_illness"      />
+        <result property="preliminaryDiagnosis" column="preliminary_diagnosis"/>
+        <result property="finalDiagnosis"      column="final_diagnosis"      />
+        <result property="medicalAdvice"       column="medical_advice"       />
+        <result property="recordStatus"        column="record_status"        />
+        <result property="createBy"            column="create_by"            />
+        <result property="createTime"          column="create_time"          />
+        <result property="updateBy"            column="update_by"            />
+        <result property="updateTime"          column="update_time"          />
+        <!-- 关联患者 -->
+        <association property="patient" javaType="com.ruoyi.hospital.domain.ChPatient">
+            <id     property="patientId"    column="p_id"       />
+            <result property="patientName"  column="p_name"     />
+            <result property="phone"        column="p_phone"    />
+        </association>
+        <!-- 关联医生 -->
+        <association property="staff" javaType="com.ruoyi.hospital.domain.ChStaff">
+            <id     property="staffId"      column="s_id"       />
+            <result property="staffName"    column="s_name"     />
+        </association>
+        <!-- 关联处方 -->
+        <association property="prescription" javaType="com.ruoyi.hospital.domain.ChPrescription">
+            <id     property="prescriptionId" column="pr_id"     />
+            <result property="prescriptionNo" column="pr_no"     />
+        </association>
+    </resultMap>
+
+    <sql id="selectChMedicalRecordVo">
+        select mr.record_id, mr.record_no, mr.patient_id, mr.staff_id, mr.prescription_id,
+        mr.visit_date, mr.visit_type, mr.chief_complaint, mr.present_illness,
+        mr.preliminary_diagnosis, mr.final_diagnosis, mr.medical_advice, mr.record_status,
+        mr.create_by, mr.create_time, mr.update_by, mr.update_time,
+    pat.patient_id as p_id, up.nick_name as p_name, pat.phone as p_phone,
+        st.staff_id as s_id, st.staff_name as s_name,
+        pr.prescription_id as pr_id, pr.prescription_no as pr_no
+    from ch_medical_record mr
+    left join ch_patient pat on mr.patient_id = pat.patient_id
+    left join sys_user up on pat.user_id = up.user_id
+    left join ch_staff st on mr.staff_id = st.staff_id
+    left join ch_prescription pr on mr.prescription_id = pr.prescription_id
+    </sql>
+
+    <select id="selectChMedicalRecordById" parameterType="Long" resultMap="ChMedicalRecordResult">
+        <include refid="selectChMedicalRecordVo"/>
+        where mr.record_id = #{recordId}
+    </select>
+
+    <select id="selectChMedicalRecordList" parameterType="com.ruoyi.hospital.domain.ChMedicalRecord" resultMap="ChMedicalRecordResult">
+        <include refid="selectChMedicalRecordVo"/>
+        <where>
+            <if test="patientId != null">and mr.patient_id = #{patientId}</if>
+            <if test="staffId != null">and mr.staff_id = #{staffId}</if>
+            <if test="prescriptionId != null">and mr.prescription_id = #{prescriptionId}</if>
+            <if test="recordStatus != null and recordStatus != ''">and mr.record_status = #{recordStatus}</if>
+        </where>
+    </select>
+
+    <insert id="insertChMedicalRecord" parameterType="com.ruoyi.hospital.domain.ChMedicalRecord" useGeneratedKeys="true" keyProperty="recordId">
+        insert into ch_medical_record
+        (record_no, patient_id, staff_id, prescription_id, visit_date,
+        visit_type, chief_complaint, present_illness, preliminary_diagnosis,
+        final_diagnosis, medical_advice, record_status, create_by, create_time)
+        values
+        (#{recordNo}, #{patientId}, #{staffId}, #{prescriptionId}, #{visitDate},
+        #{visitType}, #{chiefComplaint}, #{presentIllness}, #{preliminaryDiagnosis},
+        #{finalDiagnosis}, #{medicalAdvice}, #{recordStatus}, #{createBy}, sysdate())
+    </insert>
+
+    <update id="updateChMedicalRecord" parameterType="com.ruoyi.hospital.domain.ChMedicalRecord">
+        update ch_medical_record
+        <trim prefix="set" suffixOverrides=",">
+            <if test="recordNo != null and recordNo != ''">record_no = #{recordNo},</if>
+            <if test="patientId != null">patient_id = #{patientId},</if>
+            <if test="staffId != null">staff_id = #{staffId},</if>
+            <if test="prescriptionId != null">prescription_id = #{prescriptionId},</if>
+            <if test="visitDate != null">visit_date = #{visitDate},</if>
+            <if test="visitType != null and visitType != ''">visit_type = #{visitType},</if>
+            <if test="chiefComplaint != null">chief_complaint = #{chiefComplaint},</if>
+            <if test="presentIllness != null">present_illness = #{presentIllness},</if>
+            <if test="preliminaryDiagnosis != null">preliminary_diagnosis = #{preliminaryDiagnosis},</if>
+            <if test="finalDiagnosis != null">final_diagnosis = #{finalDiagnosis},</if>
+            <if test="medicalAdvice != null">medical_advice = #{medicalAdvice},</if>
+            <if test="recordStatus != null and recordStatus != ''">record_status = #{recordStatus},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </trim>
+        where record_id = #{recordId}
+    </update>
+
+    <delete id="deleteChMedicalRecordById" parameterType="Long">
+        delete from ch_medical_record where record_id = #{recordId}
+    </delete>
+
+    <delete id="deleteChMedicalRecordByIds" parameterType="Long">
+        delete from ch_medical_record where record_id in
+        <foreach item="recordId" collection="array" open="(" separator="," close=")">
+            #{recordId}
+        </foreach>
+    </delete>
+</mapper>
