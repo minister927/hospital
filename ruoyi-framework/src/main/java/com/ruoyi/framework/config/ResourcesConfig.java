@@ -25,6 +25,8 @@ public class ResourcesConfig implements WebMvcConfigurer
 {
     @Autowired
     private RepeatSubmitInterceptor repeatSubmitInterceptor;
+    @Autowired
+    private com.ruoyi.framework.interceptor.AdminTokenInterceptor adminTokenInterceptor;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry)
@@ -46,6 +48,8 @@ public class ResourcesConfig implements WebMvcConfigurer
     public void addInterceptors(InterceptorRegistry registry)
     {
         registry.addInterceptor(repeatSubmitInterceptor).addPathPatterns("/**");
+        // 对后台管理相关路径进行额外的来源校验，拒绝非 admin token 访问
+        registry.addInterceptor(adminTokenInterceptor).addPathPatterns("/admin/**", "/getRouters");
     }
 
     /**

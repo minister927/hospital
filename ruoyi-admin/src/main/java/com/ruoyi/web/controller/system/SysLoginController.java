@@ -57,9 +57,10 @@ public class SysLoginController
     public AjaxResult login(@RequestBody LoginBody loginBody)
     {
         AjaxResult ajax = AjaxResult.success();
-        // 生成令牌
+        String clientType = loginBody.getClientType();
+        // 生成令牌（loginService 内会根据 clientType 将其保存到 LoginUser）
         String token = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
-                loginBody.getUuid());
+                loginBody.getUuid(), clientType);
         ajax.put(Constants.TOKEN, token);
         return ajax;
     }

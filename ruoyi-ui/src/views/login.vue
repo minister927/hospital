@@ -77,6 +77,7 @@ export default {
       loginForm: {
         username: "admin",
         password: "admin123",
+        clientType: 'admin',
         rememberMe: true,
         code: "",
         uuid: ""

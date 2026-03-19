@@ -26,6 +26,10 @@ public class LoginBody
      * 唯一标识
      */
     private String uuid;
+    /**
+     * 登录客户端类型: 'admin' 或 'portal'
+     */
+    private String clientType;
 
     public String getUsername()
     {
@@ -65,5 +69,15 @@ public class LoginBody
     public void setUuid(String uuid)
     {
         this.uuid = uuid;
+    }
+
+    public String getClientType()
+    {
+        return clientType;
+    }
+
+    public void setClientType(String clientType)
+    {
+        this.clientType = clientType;
     }
 }

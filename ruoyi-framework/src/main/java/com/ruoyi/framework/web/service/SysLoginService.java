@@ -60,7 +60,7 @@ public class SysLoginService
      * @param uuid 唯一标识
      * @return 结果
      */
-    public String login(String username, String password, String code, String uuid)
+    public String login(String username, String password, String code, String uuid, String clientType)
     {
         // 验证码校验
         validateCaptcha(username, code, uuid);
@@ -94,6 +94,8 @@ public class SysLoginService
         }
         AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success")));
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+        // 保存登录来源（admin 或 portal），用于 token 中的声明与后续校验
+        loginUser.setClientType(clientType == null ? "portal" : clientType);
         recordLoginInfo(loginUser.getUserId());
         // 生成token
         return tokenService.createToken(loginUser);

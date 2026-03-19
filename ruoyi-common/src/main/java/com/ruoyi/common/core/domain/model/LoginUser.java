@@ -70,6 +70,8 @@ public class LoginUser implements UserDetails
      * 用户信息
      */
     private SysUser user;
+    /** 登录来源类型 admin|portal */
+    private String clientType;
 
     public LoginUser()
     {
@@ -256,6 +258,16 @@ public class LoginUser implements UserDetails
     public void setUser(SysUser user)
     {
         this.user = user;
+    }
+
+    public String getClientType()
+    {
+        return clientType;
+    }
+
+    public void setClientType(String clientType)
+    {
+        this.clientType = clientType;
     }
 
     @Override

@@ -47,8 +47,10 @@ const user = {
       const password = userInfo.password
       const code = userInfo.code
       const uuid = userInfo.uuid
+      const clientType = userInfo.clientType || 'admin'
       return new Promise((resolve, reject) => {
-        login(username, password, code, uuid).then(res => {
+        login(username, password, code, uuid, clientType).then(res => {
+          // 目前仍然使用 Admin-Token 作为主 token 存储（后续可扩展为 Admin/Portal 分离）
           setToken(res.token)
           commit('SET_TOKEN', res.token)
           resolve()
